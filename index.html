@@ -65,7 +65,6 @@
         .result-item:last-child { margin-bottom: 0; }
         .currency-code { color: #667eea; font-weight: 700; }
         .amount { color: #333; }
-        .loading { text-align: center; color: #999; }
     </style>
 </head>
 <body>
@@ -85,6 +84,8 @@
                 <option value="GBP">GBP - Фунт</option>
                 <option value="JPY">JPY - Йена</option>
                 <option value="RUB">RUB - Рубль</option>
+                <option value="AED">AED - Дирхам ОАЭ</option>
+                <option value="ZAR">ZAR - Ранд ЮАР</option>
             </select>
         </div>
 
@@ -94,14 +95,45 @@
                 <input type="checkbox" id="to1" value="EUR" checked style="width: auto; margin-right: 10px;">
                 EUR - Евро
             </label>
-            <label style="display: flex; align-items: center; font-weight: 400;">
+            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px;">
                 <input type="checkbox" id="to2" value="GBP" checked style="width: auto; margin-right: 10px;">
                 GBP - Фунт
+            </label>
+            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px;">
+                <input type="checkbox" id="to3" value="JPY" checked style="width: auto; margin-right: 10px;">
+                JPY - Йена
+            </label>
+            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px;">
+                <input type="checkbox" id="to4" value="AED" style="width: auto; margin-right: 10px;">
+                AED - Дирхам ОАЭ
+            </label>
+            <label style="display: flex; align-items: center; font-weight: 400;">
+                <input type="checkbox" id="to5" value="ZAR" style="width: auto; margin-right: 10px;">
+                ZAR - Ранд ЮАР
             </label>
         </div>
 
         <div class="results" id="results">
-            <div class="loading">Загрузка курсов...</div>
+            <div class="result-item">
+                <span>EUR</span>
+                <span class="amount" id="result1">0</span>
+            </div>
+            <div class="result-item">
+                <span>GBP</span>
+                <span class="amount" id="result2">0</span>
+            </div>
+            <div class="result-item">
+                <span>JPY</span>
+                <span class="amount" id="result3">0</span>
+            </div>
+            <div class="result-item">
+                <span>AED</span>
+                <span class="amount" id="result4">0</span>
+            </div>
+            <div class="result-item">
+                <span>ZAR</span>
+                <span class="amount" id="result5">0</span>
+            </div>
         </div>
     </div>
 
@@ -117,14 +149,18 @@
                 convert();
             } catch (error) {
                 console.error('Ошибка загрузки курсов:', error);
-                document.getElementById('results').innerHTML = '<div class="loading">Ошибка загрузки курсов</div>';
             }
         }
 
         const amountInput = document.getElementById('amount');
         const fromCurrency = document.getElementById('fromCurrency');
-        const to1 = document.getElementById('to1');
-        const to2 = document.getElementById('to2');
+        const checkboxes = [
+            document.getElementById('to1'),
+            document.getElementById('to2'),
+            document.getElementById('to3'),
+            document.getElementById('to4'),
+            document.getElementById('to5')
+        ];
 
         function convert() {
             const amount = parseFloat(amountInput.value) || 0;
@@ -134,25 +170,20 @@
 
             const amountInUSD = amount / rates[from];
             
-            let html = '';
-            
-            if (to1.checked && rates[to1.value]) {
-                const result = (amountInUSD * rates[to1.value]).toFixed(2);
-                html += `<div class="result-item"><span class="currency-code">${to1.value}</span><span class="amount">${result}</span></div>`;
-            }
-            
-            if (to2.checked && rates[to2.value]) {
-                const result = (amountInUSD * rates[to2.value]).toFixed(2);
-                html += `<div class="result-item"><span class="currency-code">${to2.value}</span><span class="amount">${result}</span></div>`;
-            }
-
-            document.getElementById('results').innerHTML = html;
+            checkboxes.forEach((checkbox, index) => {
+                const resultId = 'result' + (index + 1);
+                if (checkbox.checked && rates[checkbox.value]) {
+                    const result = (amountInUSD * rates[checkbox.value]).toFixed(2);
+                    document.getElementById(resultId).textContent = result;
+                }
+            });
         }
 
         amountInput.addEventListener('input', convert);
         fromCurrency.addEventListener('change', convert);
-        to1.addEventListener('change', convert);
-        to2.addEventListener('change', convert);
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', convert);
+        });
 
         fetchRates();
     </script>
