@@ -61,6 +61,10 @@
             margin-bottom: 10px;
             font-size: 18px;
             font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .result-item.hidden {
+            display: none;
         }
         .result-item:last-child { margin-bottom: 0; }
         .currency-code { color: #667eea; font-weight: 700; }
@@ -114,23 +118,23 @@
         </div>
 
         <div class="results" id="results">
-            <div class="result-item">
+            <div class="result-item" id="resultContainer1">
                 <span>EUR</span>
                 <span class="amount" id="result1">0</span>
             </div>
-            <div class="result-item">
+            <div class="result-item" id="resultContainer2">
                 <span>GBP</span>
                 <span class="amount" id="result2">0</span>
             </div>
-            <div class="result-item">
+            <div class="result-item" id="resultContainer3">
                 <span>JPY</span>
                 <span class="amount" id="result3">0</span>
             </div>
-            <div class="result-item">
+            <div class="result-item hidden" id="resultContainer4">
                 <span>AED</span>
                 <span class="amount" id="result4">0</span>
             </div>
-            <div class="result-item">
+            <div class="result-item hidden" id="resultContainer5">
                 <span>ZAR</span>
                 <span class="amount" id="result5">0</span>
             </div>
@@ -155,11 +159,11 @@
         const amountInput = document.getElementById('amount');
         const fromCurrency = document.getElementById('fromCurrency');
         const checkboxes = [
-            document.getElementById('to1'),
-            document.getElementById('to2'),
-            document.getElementById('to3'),
-            document.getElementById('to4'),
-            document.getElementById('to5')
+            { checkbox: document.getElementById('to1'), resultId: 'result1', containerId: 'resultContainer1' },
+            { checkbox: document.getElementById('to2'), resultId: 'result2', containerId: 'resultContainer2' },
+            { checkbox: document.getElementById('to3'), resultId: 'result3', containerId: 'resultContainer3' },
+            { checkbox: document.getElementById('to4'), resultId: 'result4', containerId: 'resultContainer4' },
+            { checkbox: document.getElementById('to5'), resultId: 'result5', containerId: 'resultContainer5' }
         ];
 
         function convert() {
@@ -170,18 +174,24 @@
 
             const amountInUSD = amount / rates[from];
             
-            checkboxes.forEach((checkbox, index) => {
-                const resultId = 'result' + (index + 1);
-                if (checkbox.checked && rates[checkbox.value]) {
-                    const result = (amountInUSD * rates[checkbox.value]).toFixed(2);
-                    document.getElementById(resultId).textContent = result;
+            checkboxes.forEach(({ checkbox, resultId, containerId }) => {
+                const container = document.getElementById(containerId);
+                
+                if (checkbox.checked) {
+                    if (rates[checkbox.value]) {
+                        const result = (amountInUSD * rates[checkbox.value]).toFixed(2);
+                        document.getElementById(resultId).textContent = result;
+                        container.classList.remove('hidden');
+                    }
+                } else {
+                    container.classList.add('hidden');
                 }
             });
         }
 
         amountInput.addEventListener('input', convert);
         fromCurrency.addEventListener('change', convert);
-        checkboxes.forEach(checkbox => {
+        checkboxes.forEach(({ checkbox }) => {
             checkbox.addEventListener('change', convert);
         });
 
