@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конвертер валют</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+        .input-group {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #555;
+            font-weight: 600;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .results {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 18px;
+            font-weight: 500;
+        }
+        .result-item:last-child { margin-bottom: 0; }
+        .currency-code { color: #667eea; font-weight: 700; }
+        .amount { color: #333; }
+        .loading { text-align: center; color: #999; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💱 Конвертер валют</h1>
+        
+        <div class="input-group">
+            <label>Сумма</label>
+            <input type="number" id="amount" placeholder="100" value="100" min="0">
+        </div>
+
+        <div class="input-group">
+            <label>Из какой валюты</label>
+            <select id="fromCurrency">
+                <option value="USD">USD - Доллар</option>
+                <option value="EUR">EUR - Евро</option>
+                <option value="GBP">GBP - Фунт</option>
+                <option value="JPY">JPY - Йена</option>
+                <option value="RUB">RUB - Рубль</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>В какие валюты конвертировать</label>
+            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px;">
+                <input type="checkbox" id="to1" value="EUR" checked style="width: auto; margin-right: 10px;">
+                EUR - Евро
+            </label>
+            <label style="display: flex; align-items: center; font-weight: 400;">
+                <input type="checkbox" id="to2" value="GBP" checked style="width: auto; margin-right: 10px;">
+                GBP - Фунт
+            </label>
+        </div>
+
+        <div class="results" id="results">
+            <div class="loading">Загрузка курсов...</div>
+        </div>
+    </div>
+
+    <script>
+        let rates = {};
+
+        async function fetchRates() {
+            try {
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+                const data = await response.json();
+                rates = data.rates;
+                rates.USD = 1;
+                convert();
+            } catch (error) {
+                console.error('Ошибка загрузки курсов:', error);
+                document.getElementById('results').innerHTML = '<div class="loading">Ошибка загрузки курсов</div>';
+            }
+        }
+
+        const amountInput = document.getElementById('amount');
+        const fromCurrency = document.getElementById('fromCurrency');
+        const to1 = document.getElementById('to1');
+        const to2 = document.getElementById('to2');
+
+        function convert() {
+            const amount = parseFloat(amountInput.value) || 0;
+            const from = fromCurrency.value;
+            
+            if (!rates[from]) return;
+
+            const amountInUSD = amount / rates[from];
+            
+            let html = '';
+            
+            if (to1.checked && rates[to1.value]) {
+                const result = (amountInUSD * rates[to1.value]).toFixed(2);
+                html += `<div class="result-item"><span class="currency-code">${to1.value}</span><span class="amount">${result}</span></div>`;
+            }
+            
+            if (to2.checked && rates[to2.value]) {
+                const result = (amountInUSD * rates[to2.value]).toFixed(2);
+                html += `<div class="result-item"><span class="currency-code">${to2.value}</span><span class="amount">${result}</span></div>`;
+            }
+
+            document.getElementById('results').innerHTML = html;
+        }
+
+        amountInput.addEventListener('input', convert);
+        fromCurrency.addEventListener('change', convert);
+        to1.addEventListener('change', convert);
+        to2.addEventListener('change', convert);
+
+        fetchRates();
+    </script>
+</body>
+</html>
