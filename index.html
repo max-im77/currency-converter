@@ -125,6 +125,52 @@
             margin-top: 30px;
         }
 
+        .currencies-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 10px 0;
+            scroll-behavior: smooth;
+        }
+
+        .currencies-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .currencies-scroll::-webkit-scrollbar-track {
+            background: var(--result-bg);
+            border-radius: 3px;
+        }
+
+        .currencies-scroll::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 3px;
+        }
+
+        .currency-btn {
+            flex-shrink: 0;
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .currency-btn:hover {
+            border-color: var(--accent);
+        }
+
+        .currency-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
         .results {
             background: var(--result-bg);
             padding: 20px;
@@ -200,30 +246,20 @@
 
         <div class="checkboxes-group">
             <label>В какие валюты конвертировать</label>
-            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
-                <input type="checkbox" id="to1" value="EUR" checked style="width: auto; margin-right: 10px;">
-                🇪🇺 EUR - Евро
-            </label>
-            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
-                <input type="checkbox" id="to2" value="GBP" checked style="width: auto; margin-right: 10px;">
-                🇬🇧 GBP - Фунт
-            </label>
-            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
-                <input type="checkbox" id="to3" value="JPY" checked style="width: auto; margin-right: 10px;">
-                🇯🇵 JPY - Йена
-            </label>
-            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
-                <input type="checkbox" id="to4" value="RUB" style="width: auto; margin-right: 10px;">
-                🇷🇺 RUB - Рубль
-            </label>
-            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
-                <input type="checkbox" id="to5" value="AED" style="width: auto; margin-right: 10px;">
-                🇦🇪 AED - Дирхам ОАЭ
-            </label>
-            <label style="display: flex; align-items: center; font-weight: 400; color: var(--text-secondary);">
-                <input type="checkbox" id="to6" value="ZAR" style="width: auto; margin-right: 10px;">
-                🇿🇦 ZAR - Ранд ЮАР
-            </label>
+            <div class="currencies-scroll" id="currenciesScroll">
+                <button class="currency-btn active" data-currency="EUR" data-id="to1">🇪🇺 EUR</button>
+                <button class="currency-btn active" data-currency="GBP" data-id="to2">🇬🇧 GBP</button>
+                <button class="currency-btn active" data-currency="JPY" data-id="to3">🇯🇵 JPY</button>
+                <button class="currency-btn" data-currency="RUB" data-id="to4">🇷🇺 RUB</button>
+                <button class="currency-btn" data-currency="AED" data-id="to5">🇦🇪 AED</button>
+                <button class="currency-btn" data-currency="ZAR" data-id="to6">🇿🇦 ZAR</button>
+            </div>
+            <input type="hidden" id="to1" value="EUR" data-checked="true">
+            <input type="hidden" id="to2" value="GBP" data-checked="true">
+            <input type="hidden" id="to3" value="JPY" data-checked="true">
+            <input type="hidden" id="to4" value="RUB" data-checked="false">
+            <input type="hidden" id="to5" value="AED" data-checked="false">
+            <input type="hidden" id="to6" value="ZAR" data-checked="false">
         </div>
 
         <div class="results" id="results">
@@ -287,6 +323,18 @@
             themeToggle.querySelector('.toggle-circle').textContent = isDark ? '🌙' : '☀️';
         });
 
+        // Кнопки валют
+        const currencyBtns = document.querySelectorAll('.currency-btn');
+        currencyBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('active');
+                const id = btn.getAttribute('data-id');
+                const isActive = btn.classList.contains('active');
+                document.getElementById(id).setAttribute('data-checked', isActive);
+                convert();
+            });
+        });
+
         let rates = {};
 
         async function fetchRates() {
@@ -303,14 +351,6 @@
 
         const amountInput = document.getElementById('amount');
         const fromCurrency = document.getElementById('fromCurrency');
-        const checkboxes = [
-            { checkbox: document.getElementById('to1'), resultId: 'result1', containerId: 'resultContainer1' },
-            { checkbox: document.getElementById('to2'), resultId: 'result2', containerId: 'resultContainer2' },
-            { checkbox: document.getElementById('to3'), resultId: 'result3', containerId: 'resultContainer3' },
-            { checkbox: document.getElementById('to4'), resultId: 'result4', containerId: 'resultContainer4' },
-            { checkbox: document.getElementById('to5'), resultId: 'result5', containerId: 'resultContainer5' },
-            { checkbox: document.getElementById('to6'), resultId: 'result6', containerId: 'resultContainer6' }
-        ];
 
         function convert() {
             const amount = parseFloat(amountInput.value) || 0;
@@ -318,21 +358,27 @@
             if (!rates[from]) return;
 
             const amountInUSD = amount / rates[from];
-            checkboxes.forEach(({ checkbox, resultId, containerId }) => {
+
+            for (let i = 1; i <= 6; i++) {
+                const input = document.getElementById(`to${i}`);
+                const isChecked = input.getAttribute('data-checked') === 'true';
+                const currency = input.value;
+                const resultId = `result${i}`;
+                const containerId = `resultContainer${i}`;
                 const container = document.getElementById(containerId);
-                if (checkbox.checked && rates[checkbox.value]) {
-                    const result = (amountInUSD * rates[checkbox.value]).toFixed(2);
+
+                if (isChecked && rates[currency]) {
+                    const result = (amountInUSD * rates[currency]).toFixed(2);
                     document.getElementById(resultId).textContent = result;
                     container.classList.remove('hidden');
                 } else {
                     container.classList.add('hidden');
                 }
-            });
+            }
         }
 
         amountInput.addEventListener('input', convert);
         fromCurrency.addEventListener('change', convert);
-        checkboxes.forEach(({ checkbox }) => checkbox.addEventListener('change', convert));
         fetchRates();
     </script>
 </body>
