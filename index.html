@@ -146,6 +146,16 @@
             display: none;
         }
 
+        .currency-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .flag {
+            font-size: 20px;
+        }
+
         .currency-code { 
             color: var(--accent); 
             font-weight: 700; 
@@ -173,13 +183,13 @@
         <div class="input-group">
             <label>Из какой валюты</label>
             <select id="fromCurrency">
-                <option value="USD">USD - Доллар</option>
-                <option value="EUR">EUR - Евро</option>
-                <option value="GBP">GBP - Фунт</option>
-                <option value="JPY">JPY - Йена</option>
-                <option value="RUB">RUB - Рубль</option>
-                <option value="AED">AED - Дирхам ОАЭ</option>
-                <option value="ZAR">ZAR - Ранд ЮАР</option>
+                <option value="USD">🇺🇸 USD - Доллар</option>
+                <option value="EUR">🇪🇺 EUR - Евро</option>
+                <option value="GBP">🇬🇧 GBP - Фунт</option>
+                <option value="JPY">🇯🇵 JPY - Йена</option>
+                <option value="RUB">🇷🇺 RUB - Рубль</option>
+                <option value="AED">🇦🇪 AED - Дирхам ОАЭ</option>
+                <option value="ZAR">🇿🇦 ZAR - Ранд ЮАР</option>
             </select>
         </div>
 
@@ -187,46 +197,72 @@
             <label>В какие валюты конвертировать</label>
             <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
                 <input type="checkbox" id="to1" value="EUR" checked style="width: auto; margin-right: 10px;">
-                EUR - Евро
+                🇪🇺 EUR - Евро
             </label>
             <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
                 <input type="checkbox" id="to2" value="GBP" checked style="width: auto; margin-right: 10px;">
-                GBP - Фунт
+                🇬🇧 GBP - Фунт
             </label>
             <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
                 <input type="checkbox" id="to3" value="JPY" checked style="width: auto; margin-right: 10px;">
-                JPY - Йена
+                🇯🇵 JPY - Йена
             </label>
             <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
-                <input type="checkbox" id="to4" value="AED" style="width: auto; margin-right: 10px;">
-                AED - Дирхам ОАЭ
+                <input type="checkbox" id="to4" value="RUB" style="width: auto; margin-right: 10px;">
+                🇷🇺 RUB - Рубль
+            </label>
+            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
+                <input type="checkbox" id="to5" value="AED" style="width: auto; margin-right: 10px;">
+                🇦🇪 AED - Дирхам ОАЭ
             </label>
             <label style="display: flex; align-items: center; font-weight: 400; color: var(--text-secondary);">
-                <input type="checkbox" id="to5" value="ZAR" style="width: auto; margin-right: 10px;">
-                ZAR - Ранд ЮАР
+                <input type="checkbox" id="to6" value="ZAR" style="width: auto; margin-right: 10px;">
+                🇿🇦 ZAR - Ранд ЮАР
             </label>
         </div>
 
         <div class="results" id="results">
             <div class="result-item" id="resultContainer1">
-                <span>EUR</span>
+                <div class="currency-label">
+                    <span class="flag">🇪🇺</span>
+                    <span class="currency-code">EUR</span>
+                </div>
                 <span class="amount" id="result1">0</span>
             </div>
             <div class="result-item" id="resultContainer2">
-                <span>GBP</span>
+                <div class="currency-label">
+                    <span class="flag">🇬🇧</span>
+                    <span class="currency-code">GBP</span>
+                </div>
                 <span class="amount" id="result2">0</span>
             </div>
             <div class="result-item" id="resultContainer3">
-                <span>JPY</span>
+                <div class="currency-label">
+                    <span class="flag">🇯🇵</span>
+                    <span class="currency-code">JPY</span>
+                </div>
                 <span class="amount" id="result3">0</span>
             </div>
             <div class="result-item hidden" id="resultContainer4">
-                <span>AED</span>
+                <div class="currency-label">
+                    <span class="flag">🇷🇺</span>
+                    <span class="currency-code">RUB</span>
+                </div>
                 <span class="amount" id="result4">0</span>
             </div>
             <div class="result-item hidden" id="resultContainer5">
-                <span>ZAR</span>
+                <div class="currency-label">
+                    <span class="flag">🇦🇪</span>
+                    <span class="currency-code">AED</span>
+                </div>
                 <span class="amount" id="result5">0</span>
+            </div>
+            <div class="result-item hidden" id="resultContainer6">
+                <div class="currency-label">
+                    <span class="flag">🇿🇦</span>
+                    <span class="currency-code">ZAR</span>
+                </div>
+                <span class="amount" id="result6">0</span>
             </div>
         </div>
     </div>
@@ -267,7 +303,8 @@
             { checkbox: document.getElementById('to2'), resultId: 'result2', containerId: 'resultContainer2' },
             { checkbox: document.getElementById('to3'), resultId: 'result3', containerId: 'resultContainer3' },
             { checkbox: document.getElementById('to4'), resultId: 'result4', containerId: 'resultContainer4' },
-            { checkbox: document.getElementById('to5'), resultId: 'result5', containerId: 'resultContainer5' }
+            { checkbox: document.getElementById('to5'), resultId: 'result5', containerId: 'resultContainer5' },
+            { checkbox: document.getElementById('to6'), resultId: 'result6', containerId: 'resultContainer6' }
         ];
 
         function convert() {
