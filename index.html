@@ -6,74 +6,164 @@
     <title>Конвертер валют</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-secondary: white;
+            --text-primary: #333;
+            --text-secondary: #555;
+            --border-color: #e0e0e0;
+            --result-bg: #f5f5f5;
+            --accent: #667eea;
+        }
+
+        body.dark-theme {
+            --bg-primary: linear-gradient(135deg, #1e1e2e 0%, #2a2a3e 100%);
+            --bg-secondary: #2a2a3e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-color: #444;
+            --result-bg: #1e1e2e;
+            --accent: #667eea;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: var(--bg-primary);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            transition: background 0.3s ease;
         }
+
         .container {
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             max-width: 500px;
             width: 100%;
+            transition: background 0.3s ease, color 0.3s ease;
         }
-        h1 { text-align: center; color: #333; margin-bottom: 30px; }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--text-primary);
+            font-size: 24px;
+        }
+
+        .theme-toggle {
+            width: 50px;
+            height: 28px;
+            background: var(--border-color);
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+        }
+
+        .toggle-circle {
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        body.dark-theme .toggle-circle {
+            transform: translateX(22px);
+        }
+
         .input-group {
             margin-bottom: 30px;
         }
+
         label {
             display: block;
             margin-bottom: 10px;
-            color: #555;
+            color: var(--text-secondary);
             font-weight: 600;
         }
+
         input, select {
             width: 100%;
             padding: 12px;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
         }
+
         input:focus, select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--accent);
         }
+
         .results {
-            background: #f5f5f5;
+            background: var(--result-bg);
             padding: 20px;
             border-radius: 10px;
             margin-top: 30px;
+            transition: background 0.3s ease;
         }
+
         .result-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 15px;
-            background: white;
+            background: var(--bg-secondary);
             border-radius: 8px;
             margin-bottom: 10px;
             font-size: 18px;
             font-weight: 500;
             transition: all 0.3s ease;
+            color: var(--text-primary);
         }
+
         .result-item.hidden {
             display: none;
         }
-        .result-item:last-child { margin-bottom: 0; }
-        .currency-code { color: #667eea; font-weight: 700; }
-        .amount { color: #333; }
+
+        .currency-code { 
+            color: var(--accent); 
+            font-weight: 700; 
+        }
+
+        .amount { 
+            color: var(--text-primary); 
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>💱 Конвертер валют</h1>
+        <div class="header">
+            <h1>💱 Конвертер валют</h1>
+            <button class="theme-toggle" id="themeToggle">
+                <div class="toggle-circle">☀️</div>
+            </button>
+        </div>
         
         <div class="input-group">
             <label>Сумма</label>
@@ -95,23 +185,23 @@
 
         <div class="input-group">
             <label>В какие валюты конвертировать</label>
-            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px;">
+            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
                 <input type="checkbox" id="to1" value="EUR" checked style="width: auto; margin-right: 10px;">
                 EUR - Евро
             </label>
-            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px;">
+            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
                 <input type="checkbox" id="to2" value="GBP" checked style="width: auto; margin-right: 10px;">
                 GBP - Фунт
             </label>
-            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px;">
+            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
                 <input type="checkbox" id="to3" value="JPY" checked style="width: auto; margin-right: 10px;">
                 JPY - Йена
             </label>
-            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px;">
+            <label style="display: flex; align-items: center; font-weight: 400; margin-bottom: 8px; color: var(--text-secondary);">
                 <input type="checkbox" id="to4" value="AED" style="width: auto; margin-right: 10px;">
                 AED - Дирхам ОАЭ
             </label>
-            <label style="display: flex; align-items: center; font-weight: 400;">
+            <label style="display: flex; align-items: center; font-weight: 400; color: var(--text-secondary);">
                 <input type="checkbox" id="to5" value="ZAR" style="width: auto; margin-right: 10px;">
                 ZAR - Ранд ЮАР
             </label>
@@ -142,6 +232,24 @@
     </div>
 
     <script>
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Загружаем сохранённую тему
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-theme');
+            themeToggle.querySelector('.toggle-circle').textContent = '🌙';
+        }
+
+        // Переключение темы
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-theme');
+            const isDark = document.body.classList.contains('dark-theme');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            themeToggle.querySelector('.toggle-circle').textContent = isDark ? '🌙' : '☀️';
+        });
+
         let rates = {};
 
         async function fetchRates() {
