@@ -211,6 +211,12 @@
             display: none;
         }
 
+        .result-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .currency-label {
             display: flex;
             align-items: center;
@@ -226,8 +232,32 @@
             font-weight: 700; 
         }
 
+        .amount-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .amount { 
             color: var(--text-primary); 
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            transition: transform 0.2s;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .copy-btn.copied {
+            color: #4caf50;
         }
     </style>
 </head>
@@ -292,63 +322,90 @@
                     <span class="flag">🇺🇸</span>
                     <span class="currency-code">USD</span>
                 </div>
-                <span class="amount" id="result1">0</span>
+                <div class="amount-wrapper">
+                    <span class="amount" id="result1">0</span>
+                    <button class="copy-btn" data-result-id="result1" title="Копировать">📋</button>
+                </div>
             </div>
             <div class="result-item" id="resultContainer2">
                 <div class="currency-label">
                     <span class="flag">🇪🇺</span>
                     <span class="currency-code">EUR</span>
                 </div>
-                <span class="amount" id="result2">0</span>
+                <div class="amount-wrapper">
+                    <span class="amount" id="result2">0</span>
+                    <button class="copy-btn" data-result-id="result2" title="Копировать">📋</button>
+                </div>
             </div>
             <div class="result-item" id="resultContainer3">
                 <div class="currency-label">
                     <span class="flag">🇬🇧</span>
                     <span class="currency-code">GBP</span>
                 </div>
-                <span class="amount" id="result3">0</span>
+                <div class="amount-wrapper">
+                    <span class="amount" id="result3">0</span>
+                    <button class="copy-btn" data-result-id="result3" title="Копировать">📋</button>
+                </div>
             </div>
             <div class="result-item" id="resultContainer4">
                 <div class="currency-label">
                     <span class="flag">🇯🇵</span>
                     <span class="currency-code">JPY</span>
                 </div>
-                <span class="amount" id="result4">0</span>
+                <div class="amount-wrapper">
+                    <span class="amount" id="result4">0</span>
+                    <button class="copy-btn" data-result-id="result4" title="Копировать">📋</button>
+                </div>
             </div>
             <div class="result-item hidden" id="resultContainer5">
                 <div class="currency-label">
                     <span class="flag">🇷🇺</span>
                     <span class="currency-code">RUB</span>
                 </div>
-                <span class="amount" id="result5">0</span>
+                <div class="amount-wrapper">
+                    <span class="amount" id="result5">0</span>
+                    <button class="copy-btn" data-result-id="result5" title="Копировать">📋</button>
+                </div>
             </div>
             <div class="result-item hidden" id="resultContainer6">
                 <div class="currency-label">
                     <span class="flag">🇨🇳</span>
                     <span class="currency-code">CNY</span>
                 </div>
-                <span class="amount" id="result6">0</span>
+                <div class="amount-wrapper">
+                    <span class="amount" id="result6">0</span>
+                    <button class="copy-btn" data-result-id="result6" title="Копировать">📋</button>
+                </div>
             </div>
             <div class="result-item hidden" id="resultContainer7">
                 <div class="currency-label">
                     <span class="flag">🇨🇭</span>
                     <span class="currency-code">CHF</span>
                 </div>
-                <span class="amount" id="result7">0</span>
+                <div class="amount-wrapper">
+                    <span class="amount" id="result7">0</span>
+                    <button class="copy-btn" data-result-id="result7" title="Копировать">📋</button>
+                </div>
             </div>
             <div class="result-item hidden" id="resultContainer8">
                 <div class="currency-label">
                     <span class="flag">🇦🇪</span>
                     <span class="currency-code">AED</span>
                 </div>
-                <span class="amount" id="result8">0</span>
+                <div class="amount-wrapper">
+                    <span class="amount" id="result8">0</span>
+                    <button class="copy-btn" data-result-id="result8" title="Копировать">📋</button>
+                </div>
             </div>
             <div class="result-item hidden" id="resultContainer9">
                 <div class="currency-label">
                     <span class="flag">🇿🇦</span>
                     <span class="currency-code">ZAR</span>
                 </div>
-                <span class="amount" id="result9">0</span>
+                <div class="amount-wrapper">
+                    <span class="amount" id="result9">0</span>
+                    <button class="copy-btn" data-result-id="result9" title="Копировать">📋</button>
+                </div>
             </div>
         </div>
     </div>
@@ -366,6 +423,23 @@
             const isDark = document.body.classList.contains('dark-theme');
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
             themeToggle.querySelector('.toggle-circle').textContent = isDark ? '🌙' : '☀️';
+        });
+
+        // Функция копирования
+        const copyBtns = document.querySelectorAll('.copy-btn');
+        copyBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const resultId = btn.getAttribute('data-result-id');
+                const text = document.getElementById(resultId).textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    btn.textContent = '✓';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = '📋';
+                        btn.classList.remove('copied');
+                    }, 2000);
+                });
+            });
         });
 
         const currencyBtns = document.querySelectorAll('.currency-btn');
