@@ -161,7 +161,7 @@
             white-space: nowrap;
         }
 
-        .currency-btn:hover {
+        .currency-btn:hover:not(:disabled) {
             border-color: var(--accent);
         }
 
@@ -169,6 +169,11 @@
             background: var(--accent);
             color: white;
             border-color: var(--accent);
+        }
+
+        .currency-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .results {
@@ -239,71 +244,100 @@
                 <option value="GBP">🇬🇧 GBP - Фунт</option>
                 <option value="JPY">🇯🇵 JPY - Йена</option>
                 <option value="RUB">🇷🇺 RUB - Рубль</option>
-                <option value="AED">🇦🇪 AED - Дирхам ОАЭ</option>
-                <option value="ZAR">🇿🇦 ZAR - Ранд ЮАР</option>
+                <option value="CNY">🇨🇳 CNY - Юань</option>
+                <option value="CHF">🇨🇭 CHF - Франк</option>
+                <option value="AED">🇦🇪 AED - Дирхам</option>
+                <option value="ZAR">🇿🇦 ZAR - Ранд</option>
             </select>
         </div>
 
         <div class="checkboxes-group">
             <label>В какие валюты конвертировать</label>
             <div class="currencies-scroll" id="currenciesScroll">
-                <button class="currency-btn active" data-currency="EUR" data-id="to1">🇪🇺 EUR</button>
-                <button class="currency-btn active" data-currency="GBP" data-id="to2">🇬🇧 GBP</button>
-                <button class="currency-btn active" data-currency="JPY" data-id="to3">🇯🇵 JPY</button>
-                <button class="currency-btn" data-currency="RUB" data-id="to4">🇷🇺 RUB</button>
-                <button class="currency-btn" data-currency="AED" data-id="to5">🇦🇪 AED</button>
-                <button class="currency-btn" data-currency="ZAR" data-id="to6">🇿🇦 ZAR</button>
+                <button class="currency-btn active" data-currency="USD" data-id="to1">🇺🇸 USD</button>
+                <button class="currency-btn active" data-currency="EUR" data-id="to2">🇪🇺 EUR</button>
+                <button class="currency-btn active" data-currency="GBP" data-id="to3">🇬🇧 GBP</button>
+                <button class="currency-btn active" data-currency="JPY" data-id="to4">🇯🇵 JPY</button>
+                <button class="currency-btn" data-currency="RUB" data-id="to5">🇷🇺 RUB</button>
+                <button class="currency-btn" data-currency="CNY" data-id="to6">🇨🇳 CNY</button>
+                <button class="currency-btn" data-currency="CHF" data-id="to7">🇨🇭 CHF</button>
+                <button class="currency-btn" data-currency="AED" data-id="to8">🇦🇪 AED</button>
+                <button class="currency-btn" data-currency="ZAR" data-id="to9">🇿🇦 ZAR</button>
             </div>
-            <input type="hidden" id="to1" value="EUR" data-checked="true">
-            <input type="hidden" id="to2" value="GBP" data-checked="true">
-            <input type="hidden" id="to3" value="JPY" data-checked="true">
-            <input type="hidden" id="to4" value="RUB" data-checked="false">
-            <input type="hidden" id="to5" value="AED" data-checked="false">
-            <input type="hidden" id="to6" value="ZAR" data-checked="false">
+            <input type="hidden" id="to1" value="USD" data-checked="true">
+            <input type="hidden" id="to2" value="EUR" data-checked="true">
+            <input type="hidden" id="to3" value="GBP" data-checked="true">
+            <input type="hidden" id="to4" value="JPY" data-checked="true">
+            <input type="hidden" id="to5" value="RUB" data-checked="false">
+            <input type="hidden" id="to6" value="CNY" data-checked="false">
+            <input type="hidden" id="to7" value="CHF" data-checked="false">
+            <input type="hidden" id="to8" value="AED" data-checked="false">
+            <input type="hidden" id="to9" value="ZAR" data-checked="false">
         </div>
 
         <div class="results" id="results">
             <div class="result-item" id="resultContainer1">
                 <div class="currency-label">
-                    <span class="flag">🇪🇺</span>
-                    <span class="currency-code">EUR</span>
+                    <span class="flag">🇺🇸</span>
+                    <span class="currency-code">USD</span>
                 </div>
                 <span class="amount" id="result1">0</span>
             </div>
             <div class="result-item" id="resultContainer2">
                 <div class="currency-label">
-                    <span class="flag">🇬🇧</span>
-                    <span class="currency-code">GBP</span>
+                    <span class="flag">🇪🇺</span>
+                    <span class="currency-code">EUR</span>
                 </div>
                 <span class="amount" id="result2">0</span>
             </div>
             <div class="result-item" id="resultContainer3">
                 <div class="currency-label">
-                    <span class="flag">🇯🇵</span>
-                    <span class="currency-code">JPY</span>
+                    <span class="flag">🇬🇧</span>
+                    <span class="currency-code">GBP</span>
                 </div>
                 <span class="amount" id="result3">0</span>
             </div>
-            <div class="result-item hidden" id="resultContainer4">
+            <div class="result-item" id="resultContainer4">
                 <div class="currency-label">
-                    <span class="flag">🇷🇺</span>
-                    <span class="currency-code">RUB</span>
+                    <span class="flag">🇯🇵</span>
+                    <span class="currency-code">JPY</span>
                 </div>
                 <span class="amount" id="result4">0</span>
             </div>
             <div class="result-item hidden" id="resultContainer5">
                 <div class="currency-label">
-                    <span class="flag">🇦🇪</span>
-                    <span class="currency-code">AED</span>
+                    <span class="flag">🇷🇺</span>
+                    <span class="currency-code">RUB</span>
                 </div>
                 <span class="amount" id="result5">0</span>
             </div>
             <div class="result-item hidden" id="resultContainer6">
                 <div class="currency-label">
+                    <span class="flag">🇨🇳</span>
+                    <span class="currency-code">CNY</span>
+                </div>
+                <span class="amount" id="result6">0</span>
+            </div>
+            <div class="result-item hidden" id="resultContainer7">
+                <div class="currency-label">
+                    <span class="flag">🇨🇭</span>
+                    <span class="currency-code">CHF</span>
+                </div>
+                <span class="amount" id="result7">0</span>
+            </div>
+            <div class="result-item hidden" id="resultContainer8">
+                <div class="currency-label">
+                    <span class="flag">🇦🇪</span>
+                    <span class="currency-code">AED</span>
+                </div>
+                <span class="amount" id="result8">0</span>
+            </div>
+            <div class="result-item hidden" id="resultContainer9">
+                <div class="currency-label">
                     <span class="flag">🇿🇦</span>
                     <span class="currency-code">ZAR</span>
                 </div>
-                <span class="amount" id="result6">0</span>
+                <span class="amount" id="result9">0</span>
             </div>
         </div>
     </div>
@@ -325,6 +359,8 @@
 
         // Кнопки валют
         const currencyBtns = document.querySelectorAll('.currency-btn');
+        const fromCurrency = document.getElementById('fromCurrency');
+
         currencyBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 btn.classList.toggle('active');
@@ -333,6 +369,23 @@
                 document.getElementById(id).setAttribute('data-checked', isActive);
                 convert();
             });
+        });
+
+        // Обновляем кнопки при смене исходной валюты
+        fromCurrency.addEventListener('change', () => {
+            const selectedCurrency = fromCurrency.value;
+            currencyBtns.forEach(btn => {
+                const currency = btn.getAttribute('data-currency');
+                if (currency === selectedCurrency) {
+                    btn.disabled = true;
+                    btn.classList.remove('active');
+                    const id = btn.getAttribute('data-id');
+                    document.getElementById(id).setAttribute('data-checked', 'false');
+                } else {
+                    btn.disabled = false;
+                }
+            });
+            convert();
         });
 
         let rates = {};
@@ -350,7 +403,6 @@
         }
 
         const amountInput = document.getElementById('amount');
-        const fromCurrency = document.getElementById('fromCurrency');
 
         function convert() {
             const amount = parseFloat(amountInput.value) || 0;
@@ -359,7 +411,7 @@
 
             const amountInUSD = amount / rates[from];
 
-            for (let i = 1; i <= 6; i++) {
+            for (let i = 1; i <= 9; i++) {
                 const input = document.getElementById(`to${i}`);
                 const isChecked = input.getAttribute('data-checked') === 'true';
                 const currency = input.value;
@@ -367,7 +419,10 @@
                 const containerId = `resultContainer${i}`;
                 const container = document.getElementById(containerId);
 
-                if (isChecked && rates[currency]) {
+                // Скрываем если это исходная валюта
+                if (currency === from) {
+                    container.classList.add('hidden');
+                } else if (isChecked && rates[currency]) {
                     const result = (amountInUSD * rates[currency]).toFixed(2);
                     document.getElementById(resultId).textContent = result;
                     container.classList.remove('hidden');
@@ -378,7 +433,6 @@
         }
 
         amountInput.addEventListener('input', convert);
-        fromCurrency.addEventListener('change', convert);
         fetchRates();
     </script>
 </body>
