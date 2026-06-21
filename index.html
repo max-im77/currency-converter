@@ -93,19 +93,27 @@
             transform: translateX(22px);
         }
 
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
         .input-group {
-            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
         label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: var(--text-secondary);
             font-weight: 600;
+            font-size: 13px;
         }
 
         input, select {
-            width: 100%;
             padding: 12px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
@@ -122,7 +130,6 @@
 
         .checkboxes-group {
             margin-bottom: 30px;
-            margin-top: 30px;
         }
 
         .currencies-scroll {
@@ -231,24 +238,26 @@
             </button>
         </div>
         
-        <div class="input-group">
-            <label>Сумма</label>
-            <input type="number" id="amount" placeholder="100" value="100" min="0">
-        </div>
+        <div class="input-row">
+            <div class="input-group">
+                <label>Сумма</label>
+                <input type="number" id="amount" placeholder="100" value="100" min="0">
+            </div>
 
-        <div class="input-group">
-            <label>Из какой валюты</label>
-            <select id="fromCurrency">
-                <option value="USD">🇺🇸 USD - Доллар</option>
-                <option value="EUR">🇪🇺 EUR - Евро</option>
-                <option value="GBP">🇬🇧 GBP - Фунт</option>
-                <option value="JPY">🇯🇵 JPY - Йена</option>
-                <option value="RUB">🇷🇺 RUB - Рубль</option>
-                <option value="CNY">🇨🇳 CNY - Юань</option>
-                <option value="CHF">🇨🇭 CHF - Франк</option>
-                <option value="AED">🇦🇪 AED - Дирхам</option>
-                <option value="ZAR">🇿🇦 ZAR - Ранд</option>
-            </select>
+            <div class="input-group">
+                <label>Из валюты</label>
+                <select id="fromCurrency">
+                    <option value="USD">🇺🇸 USD</option>
+                    <option value="EUR">🇪🇺 EUR</option>
+                    <option value="GBP">🇬🇧 GBP</option>
+                    <option value="JPY">🇯🇵 JPY</option>
+                    <option value="RUB">🇷🇺 RUB</option>
+                    <option value="CNY">🇨🇳 CNY</option>
+                    <option value="CHF">🇨🇭 CHF</option>
+                    <option value="AED">🇦🇪 AED</option>
+                    <option value="ZAR">🇿🇦 ZAR</option>
+                </select>
+            </div>
         </div>
 
         <div class="checkboxes-group">
@@ -357,7 +366,6 @@
             themeToggle.querySelector('.toggle-circle').textContent = isDark ? '🌙' : '☀️';
         });
 
-        // Кнопки валют
         const currencyBtns = document.querySelectorAll('.currency-btn');
         const fromCurrency = document.getElementById('fromCurrency');
 
@@ -371,7 +379,6 @@
             });
         });
 
-        // Обновляем кнопки при смене исходной валюты
         fromCurrency.addEventListener('change', () => {
             const selectedCurrency = fromCurrency.value;
             currencyBtns.forEach(btn => {
@@ -419,7 +426,6 @@
                 const containerId = `resultContainer${i}`;
                 const container = document.getElementById(containerId);
 
-                // Скрываем если это исходная валюта
                 if (currency === from) {
                     container.classList.add('hidden');
                 } else if (isChecked && rates[currency]) {
